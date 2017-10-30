@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     public int ballsNumber = 5;
+    private bool _isAnyBallInPlay = true;
+
     public ObjectPooling ballsPooling;
     public GameObject ballsStartPosition;
     public GameObject whiteBallStartPosition;
@@ -14,20 +16,18 @@ public class GameController : MonoBehaviour
 
     public GameObject cueObject = null;
 
-
     public Player testPlayer;
     private Queue<Player> _playersQueue;
+    private bool _isPlayerStateChanged = false;
 
     private static Player _currentPlayer;
+
     public static Player CurrentPlayer
     {
         get { return _currentPlayer; }
     }
 
-    private bool _isPlayerStateChanged= false;
-    private bool _isAnyBallInPlay = true;
-
-    void Start()
+    private void Start()
     {
         _playersQueue = new Queue<Player>();
         _currentPlayer = testPlayer;
@@ -35,17 +35,7 @@ public class GameController : MonoBehaviour
         InvokeRepeating("CheckBallsInPlay", 1, 2);
     }
 
-    void CheckBallsInPlay()
-    {
-        if (ballsPooling.GetActiveAmount() > 0 )
-        {
-            _isAnyBallInPlay = true;
-            return;
-        }
-        _isAnyBallInPlay = false;
-    }
-
-    void Update()
+    private void Update()
     {
         if (!_isAnyBallInPlay)
         {
@@ -65,7 +55,17 @@ public class GameController : MonoBehaviour
         ChangePlayerTurn();
     }
 
-    public void ChangePlayerTurn()
+    private void CheckBallsInPlay()
+    {
+        if (ballsPooling.GetActiveAmount() > 0)
+        {
+            _isAnyBallInPlay = true;
+            return;
+        }
+        _isAnyBallInPlay = false;
+    }
+
+    private void ChangePlayerTurn( )
     {
         if (_currentPlayer.State == PlayerStates.FinishingPlay && _isPlayerStateChanged == false)
         {
@@ -102,7 +102,7 @@ public class GameController : MonoBehaviour
         whiteBall.transform.position = whiteBallStartPosition.transform.position;
     }
 
-    void StartBalls()
+    private void StartBalls()
     {
         for (int i = 0; i < ballsNumber; i++)
         {
@@ -116,21 +116,13 @@ public class GameController : MonoBehaviour
         }
     }
 
-    void SetCueHigh()
+    private void SetCueHigh()
     {
         var yPosition = whiteBall.transform.position.y;
         cueObject.transform.position = new Vector3(cueObject.transform.position.x, yPosition, cueObject.transform.position.z);
     }
 
-    void RotateObject(float horizontalMovement, GameObject obj)
-    {
-        var angle = horizontalMovement * 30 * Time.deltaTime;
-
-        obj.transform.RotateAround(whiteBall.transform.position, Vector3.up, angle);
-        obj.transform.LookAt(whiteBall.transform);
-    }
-
-    void RestartObjectPosition(GameObject obj)
+    private void RestartCueAndWhiteBallObjectPosition()
     {
         cueObject.transform.position = whiteBall.transform.position;
         cueObject.transform.Translate(cueObject.transform.forward);

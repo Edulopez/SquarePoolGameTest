@@ -10,7 +10,6 @@ public class ObjectPooling : MonoBehaviour
     public List<GameObject> pooledObjects;
     public bool willGrow = true;
     
-    // Use this for initialization
     protected void Start()
     {
         // Current = this;

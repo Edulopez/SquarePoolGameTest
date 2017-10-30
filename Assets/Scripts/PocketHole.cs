@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class PocketHole : MonoBehaviour
 {
-
-    void OnTriggerEnter(Collider col)
+    private void OnTriggerEnter(Collider col)
     {
         if (col.tag == Tags.Ball || col.tag == Tags.WhiteBall)
         {
@@ -19,7 +18,7 @@ public class PocketHole : MonoBehaviour
         }
     }
 
-    void GivePoints(Ball ball, Player player)
+    private void GivePoints(Ball ball, Player player)
     {
         player.CurrentScore.AddPoints(ball);
     }

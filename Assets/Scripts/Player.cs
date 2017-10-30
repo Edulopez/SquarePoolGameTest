@@ -25,18 +25,16 @@ public class Player : MonoBehaviour
         get { return _isChargingHit; }
     }
 
-
     public PlayerStates State { get; set; }
 
     public Score CurrentScore { get; set; }
-
 
     public Player()
     {
         CurrentScore = new Score();
     }
 
-    void Update()
+    private void Update()
     {
         if (State != PlayerStates.Playing)
             return;
@@ -52,31 +50,27 @@ public class Player : MonoBehaviour
         }
         else if (_isChargingHit == false)
         {
-            Debug.Log("mng");
             PositionHelper.RotateAround(Input.GetAxis("Horizontal"),whiteBall, cueObject);
         }
 
+        if (!_isChargingHit) return;
 
-        if (_isChargingHit)
-        {
-            var myCue = cueObject.GetComponent<Cue>();
-            myCue.UpdateCuePosition(startingClickPoint, Vector3.back);
-            endingClickPoint = cueObject.transform.position;
-        }
+        var myCue = cueObject.GetComponent<Cue>();
+        myCue.UpdateCuePosition(startingClickPoint, Vector3.back);
+        endingClickPoint = cueObject.transform.position;
     }
 
-    public void InvokeWaitingStatus(float time)
+    public void InvokeWaitingStatus(float invokeTime)
     {
-        Invoke("PutPlayerInWaitingState", time);
+        Invoke("PutPlayerInWaitingState", invokeTime);
     }
 
-    void PutPlayerInWaitingState()
+    private void PutPlayerInWaitingState()
     {
         CancelInvoke("PutPlayerInWaitingState");
         if (State != PlayerStates.Playing)
         {
             State = PlayerStates.Waiting;
-            Debug.Log("Player is Waiting");
         }
     }
 
@@ -89,7 +83,6 @@ public class Player : MonoBehaviour
 
     public void Hit()
     {
-        Debug.Log("Mouse Up");
         if (!_isChargingHit)
         {
             startingClickPoint = Vector3.zero;
@@ -102,22 +95,8 @@ public class Player : MonoBehaviour
             cue.StrikeBall(startingClickPoint, endingClickPoint);
         cueObject.transform.position = startingClickPoint;
     }
-
-    void Grab(string targetTag)
-    {
-        _isChargingHit = false;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit))
-        {
-            if (hit.transform.gameObject.tag == targetTag)
-                _isChargingHit = true;
-        }
-    }
-
 }
 
 
 
-
+    

@@ -12,7 +12,7 @@ public class Score
         private set { }
     }
 
-    int _points = 0;
+    private int _points = 0;
 
     public void AddPoints(Ball ball)
     {

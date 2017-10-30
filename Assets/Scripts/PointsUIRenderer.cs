@@ -8,8 +8,8 @@ public class PointsUIRenderer : MonoBehaviour
 
     public Text pointsLabel;
     public Text pointsValue;
-    
-	void Update ()
+
+    private void Update ()
 	{
 	    pointsValue.text = GameController.CurrentPlayer.CurrentScore.Points.ToString();
     }

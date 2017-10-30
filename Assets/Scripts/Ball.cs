@@ -23,7 +23,7 @@ public class Ball : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    void Start()
+    private void Start()
     {
         if (useRandomColor)
             ChangeColor();
