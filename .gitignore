@@ -1,0 +1,61 @@
+
+# =============== #
+# Unity generated #
+# =============== #
+/Library/
+/Temp/
+/Obj/
+/Build/
+/Builds/
+/src/DragOnRace/Obj/
+/src/DragOnRace/Build/
+/src/DragOnRace/Builds/
+/src/DragOnRace/Temp/
+/src/DragOnRace/Library/
+src/DragOnRace/Library/
+/Assets/AssetStoreTools*
+UnityGenerated/
+Assets/Sample\Assets
+Assets/illustrator/images
+
+ # Unity3D generated meta files
+*.pidb.meta
+
+# Unity3D Generated File On Crash Reports
+sysinfo.txt
+
+# Builds
+*.apk
+*.unitypackage
+
+# ===================================== #
+# Visual Studio / MonoDevelop generated #
+# ===================================== #
+ExportedObj/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+
+# Visual Studio 2015 cache directory
+/.vs/
+
+# ============ #
+# OS generated #
+# ============ #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
