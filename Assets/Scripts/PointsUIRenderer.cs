@@ -11,6 +11,6 @@ public class PointsUIRenderer : MonoBehaviour
 
     private void Update ()
 	{
-	    pointsValue.text = GameController.CurrentPlayer.CurrentScore.Points.ToString();
+	    pointsValue.text = GameController.CurrentPlayer.Points.ToString();
     }
 }

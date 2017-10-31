@@ -10,8 +10,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float verticalAngle = 0;
-
     public Vector3 cuePosition;
     public GameObject cueObject = null;
     public GameObject whiteBall = null;
@@ -19,20 +17,13 @@ public class Player : MonoBehaviour
     public Vector3 startingClickPoint;
     public Vector3 endingClickPoint;
 
+    public bool IsChargingHit {get { return _isChargingHit; } }
     private bool _isChargingHit = false;
-    public bool IsChargingHit
-    {
-        get { return _isChargingHit; }
-    }
 
     public PlayerStates State { get; set; }
 
-    public Score CurrentScore { get; set; }
-
-    public Player()
-    {
-        CurrentScore = new Score();
-    }
+    public int Points { get { return _points; } }
+    private int _points = 0;
 
     private void Update()
     {
@@ -46,7 +37,6 @@ public class Player : MonoBehaviour
         else if (Input.GetKeyUp(KeyCode.Space))
         {
             Hit();
-            State = PlayerStates.FinishingPlay;
         }
         else if (_isChargingHit == false)
         {
@@ -56,7 +46,7 @@ public class Player : MonoBehaviour
         if (!_isChargingHit) return;
 
         var myCue = cueObject.GetComponent<Cue>();
-        myCue.UpdateCuePosition(startingClickPoint, Vector3.back);
+        myCue.ChargeHit(startingClickPoint, Vector3.back);
         endingClickPoint = cueObject.transform.position;
     }
 
@@ -65,13 +55,19 @@ public class Player : MonoBehaviour
         Invoke("PutPlayerInWaitingState", invokeTime);
     }
 
-    private void PutPlayerInWaitingState()
+    protected void PutPlayerInWaitingState()
     {
         CancelInvoke("PutPlayerInWaitingState");
         if (State != PlayerStates.Playing)
         {
             State = PlayerStates.Waiting;
         }
+    }
+
+    public void Reset()
+    {
+        _points = 0;
+        State = PlayerStates.Waiting;
     }
 
     public void ChargeHit()
@@ -92,11 +88,16 @@ public class Player : MonoBehaviour
         _isChargingHit = false;
         var cue = cueObject.GetComponent<Cue>();
         if (cue != null)
+        {
+            State = PlayerStates.FinishingPlay;
             cue.StrikeBall(startingClickPoint, endingClickPoint);
+        }
         cueObject.transform.position = startingClickPoint;
     }
+
+    public void AddPoints(Ball ball)
+    {
+        if(ball == null) return;
+        _points += ball.points;
+    }
 }
-
-
-
-    

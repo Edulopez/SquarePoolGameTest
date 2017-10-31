@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Enums;
+using Assets.Scripts.Helpers;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Ball : MonoBehaviour
 {
-
     public int points = 1;
     public bool useRandomColor = true;
 
@@ -18,22 +19,28 @@ public class Ball : MonoBehaviour
 
     private Rigidbody _rigidbody;
 
-    public void Destroy()
+    public AudioClip hitAudioClip;
+    private AudioSource _audioSource;
+
+    private void OnCollisionEnter(Collision col)
     {
-        gameObject.SetActive(false);
+        if(col.gameObject.tag == Tags.Cue) return;
+        if(col.gameObject.tag == Tags.PocketHole) return;
+
+        PlayCollisionSound();
     }
 
     private void Start()
     {
         if (useRandomColor)
             ChangeColor();
-        _rigidbody = this.GetComponent<Rigidbody>();
+        _rigidbody = this.gameObject.GetComponent<Rigidbody>();
+        _audioSource = this.gameObject.GetComponent<AudioSource>();
     }
 
-    private void StopWhenSlow()
+    public void Destroy()
     {
-        if (_rigidbody.velocity.magnitude < minimunSpeed)
-            _rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+        gameObject.SetActive(false);
     }
 
     public void ChangeColor()
@@ -47,4 +54,10 @@ public class Ball : MonoBehaviour
     {
         _rigidbody.AddForce(direction * force);
     }
+
+    protected void PlayCollisionSound()
+    {
+        SoundHelper.PlaySound(_audioSource, hitAudioClip);
+    }
+    
 }

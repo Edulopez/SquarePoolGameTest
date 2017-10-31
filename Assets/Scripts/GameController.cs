@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Assets.Scripts.Enums;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,31 +8,25 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     public int ballsNumber = 5;
-    private bool _isAnyBallInPlay = true;
-
+    public int waitingTimeBetweenTurns = 2;
     public ObjectPooling ballsPooling;
     public GameObject ballsStartPosition;
     public GameObject whiteBallStartPosition;
     public GameObject whiteBall;
+    private bool _isAnyBallInPlay = true;
 
     public GameObject cueObject = null;
 
-    public Player testPlayer;
+    public List<Player> players;
     private Queue<Player> _playersQueue;
     private bool _isPlayerStateChanged = false;
 
     private static Player _currentPlayer;
-
-    public static Player CurrentPlayer
-    {
-        get { return _currentPlayer; }
-    }
+    public static Player CurrentPlayer { get { return _currentPlayer; }}
 
     private void Start()
     {
-        _playersQueue = new Queue<Player>();
-        _currentPlayer = testPlayer;
-        _currentPlayer.State = PlayerStates.Playing;
+        SetupPlayerPlayOrder();
         InvokeRepeating("CheckBallsInPlay", 1, 2);
     }
 
@@ -55,7 +50,7 @@ public class GameController : MonoBehaviour
         ChangePlayerTurn();
     }
 
-    private void CheckBallsInPlay()
+    protected void CheckBallsInPlay()
     {
         if (ballsPooling.GetActiveAmount() > 0)
         {
@@ -65,12 +60,12 @@ public class GameController : MonoBehaviour
         _isAnyBallInPlay = false;
     }
 
-    private void ChangePlayerTurn( )
+    protected void ChangePlayerTurn()
     {
-        if (_currentPlayer.State == PlayerStates.FinishingPlay && _isPlayerStateChanged == false)
+        if (_isPlayerStateChanged == false && _currentPlayer.State == PlayerStates.FinishingPlay)
         {
             _isPlayerStateChanged = true;
-            _currentPlayer.InvokeWaitingStatus(0);
+            _currentPlayer.InvokeWaitingStatus(waitingTimeBetweenTurns);
         }
         else if (_currentPlayer.State == PlayerStates.Waiting)
         {
@@ -81,16 +76,12 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void StartGame()
-    {
-        whiteBall.transform.position = whiteBallStartPosition.transform.position;
-    }
-
     public void ResetGame()
     {
         ballsPooling.DestroyAll();
         ResetWhiteBall();
         StartBalls();
+        SetupPlayerPlayOrder();
         _isAnyBallInPlay = true;
     }
     
@@ -100,9 +91,10 @@ public class GameController : MonoBehaviour
         if (rigidBody != null)
             rigidBody.velocity = Vector3.zero;
         whiteBall.transform.position = whiteBallStartPosition.transform.position;
+        whiteBall.SetActive(true);
     }
 
-    private void StartBalls()
+    protected void StartBalls()
     {
         for (int i = 0; i < ballsNumber; i++)
         {
@@ -116,15 +108,15 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void SetCueHigh()
+    protected void SetupPlayerPlayOrder()
     {
-        var yPosition = whiteBall.transform.position.y;
-        cueObject.transform.position = new Vector3(cueObject.transform.position.x, yPosition, cueObject.transform.position.z);
-    }
-
-    private void RestartCueAndWhiteBallObjectPosition()
-    {
-        cueObject.transform.position = whiteBall.transform.position;
-        cueObject.transform.Translate(cueObject.transform.forward);
+        _playersQueue = new Queue<Player>();
+        foreach (Player player in players)
+        {
+            player.Reset();
+            _playersQueue.Enqueue(player);
+        }
+        _currentPlayer = _playersQueue.Dequeue();
+        _currentPlayer.State = PlayerStates.Playing;
     }
 }

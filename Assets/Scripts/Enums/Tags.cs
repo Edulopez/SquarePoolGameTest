@@ -10,5 +10,6 @@ namespace Assets.Scripts.Enums
         public static readonly string Cue = "Cue";
         public static readonly string Ball = "Ball";
         public static readonly string WhiteBall = "WhiteBall";
+        public static readonly string PocketHole = "PocketHole";
     }
 }
