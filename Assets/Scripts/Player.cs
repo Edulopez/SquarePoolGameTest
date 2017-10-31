@@ -31,25 +31,28 @@ public class Player : MonoBehaviour
     {
         NameId = NamesHelper.GetName();
     }
+
+    public void Reset()
+    {
+        _points = 0;
+        State = PlayerStates.Waiting;
+        _isChargingHit = false;
+    }
+
     private void Update()
     {
         if (State != PlayerStates.Playing)
             return;
 
         ReadPlayerControllers();
-
-        if (!_isChargingHit) return;
-
-        var myCue = cueObject.GetComponent<Cue>();
-        myCue.ChargeHit(startingClickPoint, Vector3.back);
-        endingClickPoint = cueObject.transform.position;
+        ChargeHit();
     }
 
     private void ReadPlayerControllers()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            ChargeHit();
+            StartChargingHit();
         }
         else if (Input.GetKeyUp(KeyCode.Space))
         {
@@ -66,36 +69,34 @@ public class Player : MonoBehaviour
         Invoke("PutPlayerInWaitingState", invokeTime);
     }
 
-    protected void PutPlayerInWaitingState()
+    private void PutPlayerInWaitingState()
     {
         CancelInvoke("PutPlayerInWaitingState");
         if (State != PlayerStates.Playing)
-        {
             State = PlayerStates.Waiting;
-        }
     }
 
-    public void Reset()
-    {
-        _points = 0;
-        State = PlayerStates.Waiting;
-    }
-
-    public void ChargeHit()
+    public void StartChargingHit()
     {
         if (_isChargingHit) return;
         startingClickPoint = cueObject.gameObject.transform.position;
         _isChargingHit = true;
     }
 
+    public void ChargeHit()
+    {
+        if (!_isChargingHit) return;
+
+        var myCue = cueObject.GetComponent<Cue>();
+        myCue.ChargeHit(startingClickPoint, Vector3.back);
+        endingClickPoint = cueObject.transform.position;
+    }
+
     public void Hit()
     {
         if (!_isChargingHit)
-        {
-            startingClickPoint = Vector3.zero;
             return;
-        }
-
+        
         _isChargingHit = false;
         var cue = cueObject.GetComponent<Cue>();
         if (cue != null)
