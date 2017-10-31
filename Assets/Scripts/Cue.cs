@@ -9,7 +9,7 @@ public class Cue : MonoBehaviour
     public AudioClip strikAudioClip;
     private AudioSource _audioSource;
 
-    private float _maxDistance = 1f;
+    private float _maxDistance = 0.5f;
     public float maxHitForce;
 
     public Ball whiteBall;

@@ -36,6 +36,17 @@ public class Player : MonoBehaviour
         if (State != PlayerStates.Playing)
             return;
 
+        ReadPlayerControllers();
+
+        if (!_isChargingHit) return;
+
+        var myCue = cueObject.GetComponent<Cue>();
+        myCue.ChargeHit(startingClickPoint, Vector3.back);
+        endingClickPoint = cueObject.transform.position;
+    }
+
+    private void ReadPlayerControllers()
+    {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             ChargeHit();
@@ -46,14 +57,8 @@ public class Player : MonoBehaviour
         }
         else if (_isChargingHit == false)
         {
-            PositionHelper.RotateAround(Input.GetAxis("Horizontal"),whiteBall, cueObject);
+            PositionHelper.RotateAround(Input.GetAxis("Horizontal"), whiteBall, cueObject);
         }
-
-        if (!_isChargingHit) return;
-
-        var myCue = cueObject.GetComponent<Cue>();
-        myCue.ChargeHit(startingClickPoint, Vector3.back);
-        endingClickPoint = cueObject.transform.position;
     }
 
     public void InvokeWaitingStatus(float invokeTime)

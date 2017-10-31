@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour
 {
     public int ballsNumber = 5;
-    public int waitingTimeBetweenTurns = 2;
+    public int waitingTimeBetweenTurns = 3;
     public ObjectPooling ballsPooling;
     public GameObject ballsStartPosition;
     public GameObject whiteBallStartPosition;
@@ -41,16 +41,17 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha0))
             ResetGame();
 
         if (!whiteBall.activeInHierarchy)
             ResetWhiteBall();
 
+        UpdateCuePosition();
         ChangePlayerTurn();
     }
 
-    protected void CheckBallsInPlay()
+    private void CheckBallsInPlay()
     {
         if (ballsPooling.GetActiveAmount() > 0)
         {
@@ -60,7 +61,7 @@ public class GameController : MonoBehaviour
         _isAnyBallInPlay = false;
     }
 
-    protected void ChangePlayerTurn()
+    private void ChangePlayerTurn()
     {
         if (_isPlayerStateChanged == false && _currentPlayer.State == PlayerStates.FinishingPlay)
         {
@@ -94,7 +95,7 @@ public class GameController : MonoBehaviour
         whiteBall.SetActive(true);
     }
 
-    protected void StartBalls()
+    private void StartBalls()
     {
         for (int i = 0; i < ballsNumber; i++)
         {
@@ -108,7 +109,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    protected void SetupPlayerPlayOrder()
+    private void SetupPlayerPlayOrder()
     {
         _playersQueue = new Queue<Player>();
         foreach (Player player in players)
@@ -118,5 +119,13 @@ public class GameController : MonoBehaviour
         }
         _currentPlayer = _playersQueue.Dequeue();
         _currentPlayer.State = PlayerStates.Playing;
+    }
+
+    private void UpdateCuePosition()
+    {
+        if (CurrentPlayer.IsChargingHit || CurrentPlayer.State == PlayerStates.FinishingPlay)
+            return;
+        cueObject.transform.position = whiteBall.transform.position;
+        cueObject.transform.Translate(Vector3.back/4);
     }
 }

@@ -12,10 +12,10 @@ public class ObjectPooling : MonoBehaviour
     
     protected void Start()
     {
-        // Current = this;
-        pooledObjects = new List<GameObject>();
         for (int i = 0; i < size; i++)
         {
+            if( i < pooledObjects.Count && pooledObjects[i] != null) continue;
+
             var obj = (GameObject)Instantiate(basePooledObject);
             obj.SetActive(false);
             pooledObjects.Add(obj);
