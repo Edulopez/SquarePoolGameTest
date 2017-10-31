@@ -5,8 +5,6 @@ using NUnit.Framework;
 using System.Collections;
 using Assets.Scripts.Enums;
 
-// too much about you dissertation
-// crees que ellos realmente saben sobre eso?
 public class PlayerTest {
 
     [Test]
