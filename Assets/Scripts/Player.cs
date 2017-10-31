@@ -5,11 +5,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
+using Assets.Scripts.Helpers;
 using UnityEngine;
 
 
 public class Player : MonoBehaviour
 {
+    public readonly string NameId;
     public Vector3 cuePosition;
     public GameObject cueObject = null;
     public GameObject whiteBall = null;
@@ -25,6 +27,10 @@ public class Player : MonoBehaviour
     public int Points { get { return _points; } }
     private int _points = 0;
 
+    public Player()
+    {
+        NameId = NamesHelper.GetName();
+    }
     private void Update()
     {
         if (State != PlayerStates.Playing)
