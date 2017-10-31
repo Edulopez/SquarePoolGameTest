@@ -52,6 +52,9 @@ public class Ball : MonoBehaviour
 
     public void GetHit(Vector3 direction, float force)
     {
+        if (_rigidbody == null)
+        return;
+        
         _rigidbody.AddForce(direction * force);
     }
 

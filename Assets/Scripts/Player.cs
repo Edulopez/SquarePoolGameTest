@@ -79,8 +79,10 @@ public class Player : MonoBehaviour
     public void StartChargingHit()
     {
         if (_isChargingHit) return;
+
         startingClickPoint = cueObject.gameObject.transform.position;
         _isChargingHit = true;
+        State = PlayerStates.Playing;
     }
 
     public void ChargeHit()
