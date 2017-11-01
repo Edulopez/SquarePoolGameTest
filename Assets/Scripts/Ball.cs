@@ -54,7 +54,6 @@ public class Ball : MonoBehaviour
     {
         if (_rigidbody == null)
         return;
-        
         _rigidbody.AddForce(direction * force);
     }
 
